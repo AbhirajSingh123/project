@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENSAI - AI Career Coach</title>
+    <meta name="description" content="Your AI Career Coach for Professional Success">
+    
+    <!-- PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        /* * =========================================
+         * 1. CSS VARIABLES & RESET
+         * =========================================
+         */
+        :root {
+            /* Palette */
+            --bg-main: #0E0E0E;
+            --bg-card: #1A1A1A;
+            --bg-card-hover: #252525;
+            --bg-input: #111111;
+            
+            --primary: #3B82F6;
+            --primary-hover: #2563EB;
+            --primary-light: rgba(59, 130, 246, 0.1);
+            
+            --text-white: #F8FAFC;
+            --text-gray: #A8A8A8;
+            --border: #333333;
+            
+            /* Typography */
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            
+            /* Spacing */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 24px;
+            
+            --nav-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-white);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        /* Utilities */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        .text-center { text-align: center; }
+        .text-blue { color: var(--primary); }
+        .text-gray { color: var(--text-gray); }
+        .font-bold { font-weight: 700; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
+        .mb-4 { margin-bottom: 40px; }
+
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* * =========================================
+         * 2. COMPONENTS
+         * =========================================
+         */
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Inputs */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            background-color: var(--bg-card-hover);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-5px);
+        }
+
+        /* * =========================================
+         * 3. NAVIGATION
+         * =========================================
+         */
+        .navbar {
+            height: var(--nav-height);
+            background-color: rgba(14, 14, 14, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-item {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--text-white);
+        }
+
+        .nav-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-avatar-menu {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            width: 150px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .nav-avatar-menu.show { display: flex; }
+        
+        .nav-avatar-menu div {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-avatar-menu div:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* * =========================================
+         * 4. SECTIONS (LANDING)
+         * =========================================
+         */
+        
+        /* Hero */
+        .hero {
+            padding-top: 140px;
+            padding-bottom: 80px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 400px;
+            background: var(--primary);
+            opacity: 0.08;
+            filter: blur(100px);
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: rgba(255,255,255,0.02);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 30px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-light);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .feature-card h3 { margin-bottom: 10px; font-size: 1.2rem; }
+        .feature-card p { color: var(--text-gray); font-size: 0.95rem; }
+
+        /* How It Works */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .step-circle {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-weight: 700;
+            color: var(--text-gray);
+            position: relative;
+            background: var(--bg-card);
+        }
+
+        .step-item:hover .step-circle {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Testimonials */
+        .testimonial-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: #333;
+            border-radius: 50%;
+        }
+
+        .quote {
+            font-style: italic;
+            color: var(--text-gray);
+        }
+
+        /* FAQ */
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 15px;
+        }
+
+        .faq-question {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .faq-question:hover { color: var(--primary); }
+
+        .faq-answer {
+            padding-bottom: 20px;
+            color: var(--text-gray);
+            display: none;
+        }
+
+        .faq-item.active .faq-answer { display: block; }
+        .faq-icon { transition: 0.3s; }
+        .faq-item.active .faq-icon { transform: rotate(180deg); }
+
+        /* CTA */
+        .cta-box {
+            background: linear-gradient(135deg, #1A1A1A 0%, #0E0E0E 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            opacity: 0.1;
+            filter: blur(80px);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            margin-top: 80px;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* * =========================================
+         * 5. AUTH & DASHBOARD PAGES
+         * =========================================
+         */
+
+        .auth-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 80px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        /* Dashboard Layout */
+        .dashboard-header {
+            margin-top: 80px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--text-gray);
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+        }
+
+        .tab-btn:hover { background: rgba(255,255,255,0.05); }
+        .tab-btn.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Insights Page */
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bar {
+            flex: 1;
+            background: var(--bg-card-hover);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: height 1s ease;
+        }
+
+        .bar-fill {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: var(--primary);
+            opacity: 0.7;
+            border-radius: 4px 4px 0 0;
+            transition: height 1s ease;
+        }
+
+        .bar:hover .bar-fill { opacity: 1; }
+
+        /* Interview Page */
+        .quiz-option {
+            background: var(--bg-input);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        /* Resume Page */
+        .resume-editor {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .resume-preview {
+            background: #fff;
+            color: #333;
+            padding: 40px;
+            border-radius: 4px;
+            min-height: 600px;
+            font-family: serif;
+        }
+        
+        .resume-preview h1 { font-size: 24px; border-bottom: 2px solid #333; margin-bottom: 5px; }
+        .resume-preview h3 { font-size: 16px; margin-top: 15px; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 2px; margin-bottom: 5px;}
+        .resume-preview p { font-size: 14px; margin-bottom: 5px; }
+        .resume-contact { font-size: 14px; color: #555; margin-bottom: 15px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; } /* Simplified mobile nav */
+            .stats-grid, .steps-grid, .resume-editor { grid-template-columns: 1fr; }
+            .hero-image { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo" onclick="app.router('home')">SENSAI</div>
+            
+            <ul class="nav-links" id="desktop-nav">
+                <li class="nav-item" onclick="app.router('home')">Home</li>
+                <li class="nav-item" onclick="app.toDashboard()">Dashboard</li>
+                <li class="nav-item">
+                    <a href="#" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.9rem;" onclick="app.router('login')" id="nav-login-btn">Log In</a>
+                </li>
+            </ul>
+
+            <!-- Auth Avatar (Hidden by default) -->
+            <div class="nav-avatar hidden" id="nav-avatar" onclick="app.toggleMenu()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <div class="nav-avatar-menu" id="user-menu">
+                    <div onclick="app.toDashboard()">Dashboard</div>
+                    <div onclick="app.router('profile')">Settings</div>
+                    <div onclick="app.logout()">Sign Out</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- VIEWS CONTAINER -->
+    <main id="app-content">
+        
+        <!-- VIEW: LANDING PAGE -->
+        <section id="view-home" class="view-section fade-in">
+            <!-- Hero -->
+            <div class="container hero">
+                <h1>Your AI Career Coach for<br>Professional Success</h1>
+                <p>Master interviews, optimize your resume, and gain industry insights with real-time AI guidance tailored to your career path.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="app.router('login')">Get Started</button>
+                    <!-- UPDATED: Watch Demo now accesses dashboard immediately -->
+                    <button class="btn btn-secondary" onclick="app.demoAccess()">Watch Demo</button>
+                </div>
+                <!-- CSS Illustration placeholder -->
+                <div class="hero-image" style="background: var(--bg-card); display: flex; align-items: center; justify-content: center; height: 300px; margin: 0 auto; overflow: hidden; position: relative;">
+                   <div style="position: absolute; width: 100%; height: 100%; background: linear-gradient(45deg, #1a1a1a 25%, #222 25%, #222 50%, #1a1a1a 50%, #1a1a1a 75%, #222 75%, #222 100%); background-size: 40px 40px; opacity: 0.2;"></div>
+                   <div style="z-index: 1; text-align: center;">
+                       <div style="font-size: 4rem; margin-bottom: 10px;">🚀</div>
+                       <div style="color: var(--text-gray);">AI Analysis Dashboard Preview</div>
+                   </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="container section-padding">
+                <div class="text-center mb-4">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Powerful Features</h2>
+                    <p class="text-gray">Everything you need to level up your career</p>
+                </div>
+                <div class="features-grid">
+                    <!-- Feature 1 -->
+                    <div class="card feature-card">
+                        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div>
+                        <h3>AI Guidance</h3>
+                        <p>Personalized career pathing based on your unique skills and goals.</p>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="card feature-card">
+                        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
+                        <h3>Interview Prep</h3>
+                        <p>Mock interviews with real-time feedback on your answers and tone.</p>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="card feature-card">
+                        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+                        <h3>Industry Insights</h3>
+                        <p>Real-time data on salary trends, role demand, and emerging skills.</p>
+                    </div>
+                    <!-- Feature 4 -->
+                    <div class="card feature-card">
+                        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+                        <h3>Smart Resume</h3>
+                        <p>ATS-friendly resume builder that auto-optimizes for your target job.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-bar">
+                <div class="container stats-grid">
+                    <div class="stat-item"><h3>50+</h3><p>Industries Covered</p></div>
+                    <div class="stat-item"><h3>1000+</h3><p>Interview Questions</p></div>
+                    <div class="stat-item"><h3>95%</h3><p>Success Rate</p></div>
+                    <div class="stat-item"><h3>24/7</h3><p>AI Support</p></div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="container section-padding">
+                <div class="text-center mb-4">
+                    <h2>How It Works</h2>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-item">
+                        <div class="step-circle">1</div>
+                        <h3>Onboarding</h3>
+                        <p class="text-gray" style="font-size: 0.9rem; margin-top:10px;">Set your profile and goals</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">2</div>
+                        <h3>Craft Docs</h3>
+                        <p class="text-gray" style="font-size: 0.9rem; margin-top:10px;">Build resume & cover letter</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">3</div>
+                        <h3>Prepare</h3>
+                        <p class="text-gray" style="font-size: 0.9rem; margin-top:10px;">Practice with AI mock tests</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">4</div>
+                        <h3>Track</h3>
+                        <p class="text-gray" style="font-size: 0.9rem; margin-top:10px;">Monitor your progress</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="container section-padding" style="max-width: 800px;">
+                <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+                <div class="faq-container">
+                    <div class="faq-item" onclick="app.toggleFaq(this)">
+                        <div class="faq-question">
+                            What makes Sensai unique?
+                            <span class="faq-icon">▼</span>
+                        </div>
+                        <div class="faq-answer">Sensai uses advanced LLMs to provide context-aware feedback specifically tuned for your industry, unlike generic advice platforms.</div>
+                    </div>
+                    <div class="faq-item" onclick="app.toggleFaq(this)">
+                        <div class="faq-question">
+                            Is my data secure?
+                            <span class="faq-icon">▼</span>
+                        </div>
+                        <div class="faq-answer">Yes, we use enterprise-grade encryption and do not share your personal career data with third parties.</div>
+                    </div>
+                    <div class="faq-item" onclick="app.toggleFaq(this)">
+                        <div class="faq-question">
+                            Can I download my resume?
+                            <span class="faq-icon">▼</span>
+                        </div>
+                        <div class="faq-answer">Absolutely. You can export your resume to PDF or DOCX formats instantly.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="container" style="padding-bottom: 80px;">
+                <div class="cta-box">
+                    <h2 class="mb-1">Ready to Accelerate Your Career?</h2>
+                    <p class="text-gray mb-2">Join thousands of professionals landing their dream jobs.</p>
+                    <button class="btn btn-primary" onclick="app.router('login')">Start Your Journey Today</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: LOGIN -->
+        <section id="view-login" class="view-section hidden fade-in">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2 class="text-center mb-2">Welcome Back</h2>
+                    <p class="text-center text-gray mb-4">Sign in to continue to Sensai</p>
+                    
+                    <form onsubmit="app.handleLogin(event)">
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" placeholder="you@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Continue with Email</button>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">
+                                <svg style="width: 16px; vertical-align: middle; margin-right: 8px;" viewBox="0 0 24 24"><path fill="currentColor" d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27c3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10c5.35 0 9.25-3.67 9.25-9.09c0-1.15-.15-1.81-.15-1.81Z"/></svg>
+                                Continue with Google
+                            </button>
+                        </div>
+                    </form>
+                    <p class="text-center text-gray" style="margin-top: 20px; font-size: 0.9rem;">
+                        Don't have an account? <span class="text-blue" style="cursor: pointer;" onclick="app.router('onboarding')">Sign up</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ONBOARDING / PROFILE SETUP -->
+        <section id="view-onboarding" class="view-section hidden fade-in">
+            <div class="auth-container">
+                <div class="auth-card" style="max-width: 600px;">
+                    <h2 class="text-center mb-2">Setup Your Profile</h2>
+                    <p class="text-center text-gray mb-4">Help us tailor the experience for you.</p>
+                    
+                    <form onsubmit="app.handleOnboarding(event)">
+                        <div class="form-group">
+                            <label class="form-label">Target Industry</label>
+                            <select class="form-control">
+                                <option>Software Engineering</option>
+                                <option>Product Management</option>
+                                <option>Data Science</option>
+                                <option>Marketing</option>
+                                <option>Finance</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Years of Experience</label>
+                            <input type="number" class="form-control" placeholder="e.g. 3">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Top Skills (comma separated)</label>
+                            <input type="text" class="form-control" placeholder="JavaScript, Python, Leadership">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Professional Bio</label>
+                            <textarea class="form-control" rows="4" placeholder="Briefly describe your career goals..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Complete Setup</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: DASHBOARD (INSIGHTS) -->
+        <section id="view-insights" class="view-section hidden fade-in">
+            <div class="container">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Industry Insights</h2>
+                        <p class="text-gray">Market outlook for <strong>Software Engineering</strong></p>
+                    </div>
+                    <div class="tab-nav">
+                        <button class="tab-btn active" onclick="app.router('insights')">Insights</button>
+                        <button class="tab-btn" onclick="app.router('interview')">Interview Prep</button>
+                        <button class="tab-btn" onclick="app.router('resume')">Resume Builder</button>
+                    </div>
+                </div>
+
+                <div class="grid-2-col" style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                    <!-- Main Chart Area -->
+                    <div class="card">
+                        <h3>Salary Trend (Annual)</h3>
+                        <p class="text-gray mb-2">Based on your experience level</p>
+                        <div class="chart-container">
+                            <div class="bar"><div class="bar-fill" style="height: 40%"></div></div>
+                            <div class="bar"><div class="bar-fill" style="height: 55%"></div></div>
+                            <div class="bar"><div class="bar-fill" style="height: 45%"></div></div>
+                            <div class="bar"><div class="bar-fill" style="height: 70%"></div></div>
+                            <div class="bar"><div class="bar-fill" style="height: 60%"></div></div>
+                            <div class="bar"><div class="bar-fill" style="height: 85%"></div></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px; color: var(--text-gray); font-size: 0.8rem;">
+                            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+                        </div>
+                    </div>
+
+                    <!-- Side Stats -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="card">
+                            <h4 class="text-gray">Growth Potential</h4>
+                            <h2 class="text-blue">+22%</h2>
+                            <p class="text-gray" style="font-size: 0.9rem;">YoY Demand</p>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-gray">Top Skill</h4>
+                            <h2>System Design</h2>
+                            <p class="text-gray" style="font-size: 0.9rem;">Highly requested</p>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-gray">Market Status</h4>
+                            <h2 style="color: #10B981;">Hot</h2>
+                            <p class="text-gray" style="font-size: 0.9rem;">High hiring volume</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: DASHBOARD (INTERVIEW) -->
+        <section id="view-interview" class="view-section hidden fade-in">
+            <div class="container">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Interview Preparation</h2>
+                        <p class="text-gray">Practice technical and behavioral questions</p>
+                    </div>
+                    <div class="tab-nav">
+                        <button class="tab-btn" onclick="app.router('insights')">Insights</button>
+                        <button class="tab-btn active" onclick="app.router('interview')">Interview Prep</button>
+                        <button class="tab-btn" onclick="app.router('resume')">Resume Builder</button>
+                    </div>
+                </div>
+
+                <div class="card" id="quiz-start">
+                    <div class="text-center" style="padding: 40px;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🎯</div>
+                        <h3>Ready for a quick assessment?</h3>
+                        <p class="text-gray mb-2">10 questions to test your engineering knowledge.</p>
+                        <button class="btn btn-primary" onclick="quiz.start()">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="card hidden" id="quiz-active">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <span id="quiz-progress" class="text-gray">Question 1/10</span>
+                        <span class="text-blue">Software Engineering</span>
+                    </div>
+                    <h3 id="quiz-question" class="mb-2" style="font-size: 1.3rem;">Question text goes here...</h3>
+                    <div id="quiz-options">
+                        <!-- Options injected via JS -->
+                    </div>
+                </div>
+                
+                <div class="card hidden text-center" id="quiz-result">
+                    <h3>Quiz Complete!</h3>
+                    <h1 id="quiz-score" class="text-blue" style="font-size: 4rem; margin: 20px 0;">80%</h1>
+                    <p class="text-gray mb-2">Great job! Here is where you can improve.</p>
+                    <!-- UPDATED: Triggers shuffle and restart -->
+                    <button class="btn btn-primary" onclick="quiz.start()">Try Again</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: DASHBOARD (RESUME) -->
+        <section id="view-resume" class="view-section hidden fade-in">
+            <div class="container">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Resume Builder</h2>
+                        <p class="text-gray">Create an ATS-optimized resume</p>
+                    </div>
+                    <div class="tab-nav">
+                        <button class="tab-btn" onclick="app.router('insights')">Insights</button>
+                        <button class="tab-btn" onclick="app.router('interview')">Interview Prep</button>
+                        <button class="tab-btn active" onclick="app.router('resume')">Resume Builder</button>
+                    </div>
+                </div>
+
+                <div class="resume-editor">
+                    <!-- Editor Inputs -->
+                    <div class="card" style="height: fit-content;">
+                        <h3 class="mb-2">Contact Details</h3>
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="res-name" oninput="resume.update()" value="Alex Morgan">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="res-email" oninput="resume.update()" value="alex.morgan@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="res-phone" oninput="resume.update()" value="+1 (555) 123-4567">
+                        </div>
+                        
+                        <h3 class="mb-2" style="margin-top: 20px;">Experience & Skills</h3>
+                        <div class="form-group">
+                            <label class="form-label">Professional Summary</label>
+                            <textarea class="form-control" id="res-summary" rows="3" oninput="resume.update()">Experienced software engineer with a focus on scalable web applications and AI integration.</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skills (Comma separated)</label>
+                            <input type="text" class="form-control" id="res-skills" oninput="resume.update()" value="JavaScript, React, Node.js, Python, AWS, Docker">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Work Experience</label>
+                            <textarea class="form-control" id="res-exp" rows="4" oninput="resume.update()">Senior Developer at TechCorp (2020-Present)&#10;- Led team of 5 developers&#10;- Increased performance by 40%</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Education</label>
+                            <textarea class="form-control" id="res-edu" rows="2" oninput="resume.update()">BS Computer Science, University of Technology (2016-2020)</textarea>
+                        </div>
+                        <!-- UPDATED: Now triggers actual PDF download -->
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="resume.download()">Download PDF</button>
+                    </div>
+
+                    <!-- Live Preview -->
+                    <div class="resume-preview" id="resume-preview-pane">
+                        <h1 id="prev-name">Alex Morgan</h1>
+                        <p class="resume-contact" id="prev-contact">alex.morgan@example.com | +1 (555) 123-4567</p>
+                        
+                        <h3>Summary</h3>
+                        <p id="prev-summary">Experienced software engineer with a focus on scalable web applications and AI integration.</p>
+                        
+                        <h3>Skills</h3>
+                        <p id="prev-skills">JavaScript, React, Node.js, Python, AWS, Docker</p>
+                        
+                        <h3>Experience</h3>
+                        <p id="prev-exp" style="white-space: pre-line;">Senior Developer at TechCorp (2020-Present)
+                        - Led team of 5 developers
+                        - Increased performance by 40%</p>
+                        
+                        <h3>Education</h3>
+                        <p id="prev-edu" style="white-space: pre-line;">BS Computer Science, University of Technology (2016-2020)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Sensai Inc. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.6;">Made with ❤️ by Abhiraj Singh</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* * =========================================
+         * APPLICATION STATE & ROUTER
+         * =========================================
+         */
+        const app = {
+            state: {
+                isLoggedIn: false,
+                user: { name: 'Alex' }
+            },
+            
+            // Simple Router
+            router: function(viewId) {
+                // Hide all sections
+                document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+                
+                // Show target section
+                const target = document.getElementById('view-' + viewId);
+                if (target) {
+                    target.classList.remove('hidden');
+                    window.scrollTo(0, 0);
+                }
+
+                // Auth Guard Logic (Visual update only)
+                if (this.state.isLoggedIn) {
+                    document.getElementById('nav-login-btn').classList.add('hidden');
+                    document.getElementById('nav-avatar').classList.remove('hidden');
+                } else {
+                    document.getElementById('nav-login-btn').classList.remove('hidden');
+                    document.getElementById('nav-avatar').classList.add('hidden');
+                }
+
+                // Reset Quiz if leaving interview tab
+                if(viewId !== 'interview') {
+                    document.getElementById('quiz-start').classList.remove('hidden');
+                    document.getElementById('quiz-active').classList.add('hidden');
+                    document.getElementById('quiz-result').classList.add('hidden');
+                }
+            },
+
+            // Handlers
+            handleLogin: function(e) {
+                e.preventDefault();
+                // Simulate API call
+                setTimeout(() => {
+                    this.state.isLoggedIn = true;
+                    this.router('onboarding'); // Go to onboarding after login
+                }, 500);
+            },
+            
+            // UPDATED: Demo Access Handler
+            demoAccess: function() {
+                this.state.isLoggedIn = true; // Auto-login as demo user
+                this.router('insights'); // Jump straight to dashboard
+            },
+
+            handleOnboarding: function(e) {
+                e.preventDefault();
+                setTimeout(() => {
+                    this.router('insights'); // Go to dashboard after onboarding
+                }, 500);
+            },
+
+            toDashboard: function() {
+                if(this.state.isLoggedIn) {
+                    this.router('insights');
+                } else {
+                    this.router('login');
+                }
+            },
+
+            logout: function() {
+                this.state.isLoggedIn = false;
+                this.toggleMenu(); // Close menu
+                this.router('home');
+            },
+
+            toggleMenu: function() {
+                const menu = document.getElementById('user-menu');
+                menu.classList.toggle('show');
+            },
+            
+            toggleFaq: function(element) {
+                element.classList.toggle('active');
+            }
+        };
+
+        /* * =========================================
+         * QUIZ LOGIC
+         * =========================================
+         */
+        const quiz = {
+            questions: [
+                {
+                    q: "What is the time complexity of a binary search?",
+                    options: ["O(n)", "O(log n)", "O(n^2)", "O(1)"],
+                    a: 1
+                },
+                {
+                    q: "Which HTTP method is used to update an existing resource?",
+                    options: ["GET", "POST", "PUT", "DELETE"],
+                    a: 2
+                },
+                {
+                    q: "In CSS, which property changes the text color?",
+                    options: ["font-color", "color", "text-style", "background"],
+                    a: 1
+                },
+                {
+                    q: "What does the 'useEffect' hook do in React?",
+                    options: ["Manages state", "Handles side effects", "Creates context", "Optimizes rendering"],
+                    a: 1
+                },
+                {
+                    q: "Which Git command stages files for commit?",
+                    options: ["git push", "git commit", "git add", "git checkout"],
+                    a: 2
+                },
+                {
+                    q: "In SQL, which command is used to retrieve data?",
+                    options: ["UPDATE", "DELETE", "SELECT", "INSERT"],
+                    a: 2
+                },
+                {
+                    q: "Which Python data structure is mutable?",
+                    options: ["Tuple", "List", "String", "Integer"],
+                    a: 1
+                },
+                {
+                    q: "What component handles asynchronous callbacks in JavaScript?",
+                    options: ["Call Stack", "Heap", "Event Loop", "DOM"],
+                    a: 2
+                },
+                {
+                    q: "What does REST stand for?",
+                    options: ["Remote Execution Standard Test", "Representational State Transfer", "Real State Transfer", "Rapid Execution Server Technology"],
+                    a: 1
+                },
+                {
+                    q: "What is the primary purpose of Docker?",
+                    options: ["Database Management", "Containerization", "Version Control", "IDE"],
+                    a: 1
+                }
+            ],
+            current: 0,
+            score: 0,
+
+            // UPDATED: Shuffle Helper
+            shuffle: function() {
+                for (let i = this.questions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.questions[i], this.questions[j]] = [this.questions[j], this.questions[i]];
+                }
+            },
+
+            start: function() {
+                // UPDATED: Shuffle questions on start/restart
+                this.shuffle();
+                this.current = 0;
+                this.score = 0;
+                document.getElementById('quiz-start').classList.add('hidden');
+                document.getElementById('quiz-active').classList.remove('hidden');
+                document.getElementById('quiz-result').classList.add('hidden');
+                this.render();
+            },
+
+            render: function() {
+                if (this.current >= this.questions.length) {
+                    this.finish();
+                    return;
+                }
+                
+                const qData = this.questions[this.current];
+                document.getElementById('quiz-question').innerText = qData.q;
+                document.getElementById('quiz-progress').innerText = `Question ${this.current + 1}/${this.questions.length}`;
+                
+                const optionsDiv = document.getElementById('quiz-options');
+                optionsDiv.innerHTML = '';
+                
+                qData.options.forEach((opt, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'quiz-option';
+                    div.innerText = opt;
+                    div.onclick = () => this.select(index, div);
+                    optionsDiv.appendChild(div);
+                });
+            },
+
+            select: function(index, el) {
+                // Visual feedback
+                const all = document.querySelectorAll('.quiz-option');
+                all.forEach(d => d.style.pointerEvents = 'none'); // prevent double click
+                
+                if(index === this.questions[this.current].a) {
+                    el.style.borderColor = '#10B981'; // Green
+                    el.style.background = 'rgba(16, 185, 129, 0.1)';
+                    this.score++;
+                } else {
+                    el.style.borderColor = '#EF4444'; // Red
+                    el.style.background = 'rgba(239, 68, 68, 0.1)';
+                }
+
+                setTimeout(() => {
+                    this.current++;
+                    this.render();
+                }, 800);
+            },
+
+            finish: function() {
+                document.getElementById('quiz-active').classList.add('hidden');
+                document.getElementById('quiz-result').classList.remove('hidden');
+                const percentage = Math.round((this.score / this.questions.length) * 100);
+                document.getElementById('quiz-score').innerText = percentage + '%';
+            }
+        };
+
+        /* * =========================================
+         * RESUME LOGIC
+         * =========================================
+         */
+        const resume = {
+            update: function() {
+                const name = document.getElementById('res-name').value;
+                const email = document.getElementById('res-email').value;
+                const phone = document.getElementById('res-phone').value;
+                
+                document.getElementById('prev-name').innerText = name;
+                document.getElementById('prev-contact').innerText = `${email} | ${phone}`;
+                
+                document.getElementById('prev-summary').innerText = document.getElementById('res-summary').value;
+                document.getElementById('prev-skills').innerText = document.getElementById('res-skills').value;
+                document.getElementById('prev-exp').innerText = document.getElementById('res-exp').value;
+                document.getElementById('prev-edu').innerText = document.getElementById('res-edu').value;
+            },
+
+            // UPDATED: Download function using html2pdf
+            download: function() {
+                const element = document.getElementById('resume-preview-pane');
+                const name = document.getElementById('res-name').value || 'resume';
+                const opt = {
+                    margin:       0.5,
+                    filename:     `${name.toLowerCase().replace(/\s+/g, '_')}_resume.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2 },
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                // Use the html2pdf library loaded from CDN
+                html2pdf().set(opt).from(element).save();
+            }
+        };
+
+        // Initialize
+        window.onclick = function(event) {
+            // Close dropdown if clicked outside
+            if (!event.target.closest('.nav-avatar')) {
+                const menu = document.getElementById('user-menu');
+                if (menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
